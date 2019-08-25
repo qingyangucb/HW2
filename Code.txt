@@ -1,0 +1,102 @@
+Sub easy()
+For Each ws In Worksheets
+Dim ticker As String
+Dim vol As Double
+vol = 0
+Dim lastRow As Double
+Dim countRow1 As Integer
+countRow1 = 2
+Dim countRow2 As Double
+countRow2 = 2
+Dim percent As Double
+ws.Cells(1, 9).Value = "Ticker"
+ws.Cells(1, 10).Value = "Yearly Change"
+ws.Cells(1, 11).Value = "Pecentage Change"
+ws.Cells(1, 12).Value = "Total Stock Volume"
+ws.Cells(1, 16).Value = "Ticker"
+ws.Cells(1, 17).Value = "Value"
+ws.Cells(2, 15).Value = "Greatest % Increase"
+ws.Cells(3, 15).Value = "Greatest % Decrease"
+ws.Cells(4, 15).Value = "Greatest Total Volume"
+Dim maxInc As Double
+Dim maxDec As Double
+Dim maxVol As Double
+maxInc = ws.Cells(2, 11)
+maxDec = ws.Cells(2, 11)
+maxVol = ws.Cells(2, 12)
+
+
+
+lastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+Dim pecentChange As Double
+percentChange = 0
+Dim change As Double
+change = 0
+For i = 2 To lastRow
+    vol = ws.Cells(i, 7).Value + vol
+    ticker = ws.Cells(i, 1).Value
+    
+        If ws.Cells(i, 1).Value <> ws.Cells(i + 1, 1).Value Then
+        ws.Cells(countRow1, 9).Value = ticker
+        change = ws.Cells(i, 6).Value - ws.Cells(countRow2, 3).Value
+        ws.Cells(countRow1, 10).Value = change
+            If change = 0 Then
+            percent = 0
+            countRow2 = i + 1
+            ElseIf ws.Cells(countRow2, 3).Value = 0 Then
+            ws.Cells(countRow1, 11).Value = "infinite"
+            Else
+            percent = ws.Cells(countRow1, 10).Value / ws.Cells(countRow2, 3).Value
+            End If
+            If change > 0 Then
+            ws.Cells(countRow1, 10).Interior.ColorIndex = 4
+            ElseIf change < 0 Then
+            ws.Cells(countRow1, 10).Interior.ColorIndex = 3
+            End If
+        ws.Cells(countRow1, 11).Value = percent
+        ws.Cells(countRow1, 12).Value = vol
+        countRow1 = countRow1 + 1
+        ticker = ws.Cells(i + 1, 1).Value
+        countRow2 = i + 1
+        vol = 0
+        End If
+        
+    Next i
+    
+For j = 2 To countRow1
+    If maxInc < ws.Cells(j + 1, 11) Then
+    maxInc = ws.Cells(j + 1, 11)
+    ws.Cells(2, 16).Value = ws.Cells(j + 1, 9)
+    ws.Cells(2, 17).Value = maxInc
+    End If
+    If maxDec > ws.Cells(j + 1, 11) Then
+    maxDec = ws.Cells(j, 11)
+    ws.Cells(3, 16).Value = ws.Cells(j + 1, 9)
+    ws.Cells(3, 17).Value = maxDec
+    End If
+    If maxVol < ws.Cells(j + 1, 12) Then
+    maxVol = ws.Cells(j + 1, 12)
+    ws.Cells(4, 16).Value = ws.Cells(j + 1, 9)
+    ws.Cells(4, 17).Value = maxVol
+    End If
+Next j
+ 
+    
+    
+    
+    
+
+        ws.Columns("I:L").AutoFit
+        ws.Columns("O:Q").AutoFit
+        ws.Columns("K:K").NumberFormat = "0.00%"
+        ws.Columns("Q:Q").NumberFormat = "0.00%"
+        ws.Cells(4, 17).NumberFormat = "General"
+        Next ws
+
+
+
+
+
+
+End Sub
+
